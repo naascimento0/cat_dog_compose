@@ -7,41 +7,50 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.colorResource
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.catdogincompose.screen.MainScreen
+import com.example.catdogincompose.screen.PhraseScreen
 import com.example.catdogincompose.ui.theme.CatDogInComposeTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContent {
             CatDogInComposeTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                val navController = rememberNavController()
+                Scaffold(
+                    Modifier.fillMaxSize(),
+                    containerColor = colorResource(R.color.blue),
+                ) {
+                    padding ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = "mainScreen",
+                        modifier = Modifier.padding(padding)
+                    ) {
+                        composable("mainScreen") {
+                            MainScreen(
+                                modifier = Modifier.fillMaxSize(),
+                                onSaveClick = { name ->
+                                    navController.navigate("phraseScreen/$name")
+                                }
+                            )
+                        }
+                        composable("phraseScreen/{userName}") {
+                            backStackEntry -> val userName = backStackEntry.arguments?.getString("userName") ?: "Visitante"
+                            PhraseScreen(
+                                modifier = Modifier.fillMaxSize(),
+                                userName = userName
+                            )
+                        }
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    CatDogInComposeTheme {
-        Greeting("Android")
     }
 }
