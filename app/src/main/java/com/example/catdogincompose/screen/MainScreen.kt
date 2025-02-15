@@ -1,5 +1,6 @@
 package com.example.catdogincompose.screen
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -41,6 +43,10 @@ fun MainScreen(
 ) {
     var name by remember { mutableStateOf(value = "") }
     val alataFont = FontFamily(Font(R.font.alata_regular))
+
+    val context = LocalContext.current
+    val sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
 
     Column(modifier = modifier
         .background(color = colorResource(id = R.color.blue)),
@@ -84,7 +90,11 @@ fun MainScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { onSaveClick(name) },
+            onClick = {
+                editor.putString("userName", name)
+                editor.apply()
+                onSaveClick(name)
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(id = R.color.light_blue)
             ),

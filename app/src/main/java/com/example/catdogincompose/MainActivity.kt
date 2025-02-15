@@ -1,5 +1,6 @@
 package com.example.catdogincompose
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,6 +24,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             CatDogInComposeTheme {
                 val navController = rememberNavController()
+                val sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+                val savedName = sharedPreferences.getString("userName", null)
+
                 Scaffold(
                     Modifier.fillMaxSize(),
                     containerColor = colorResource(R.color.blue),
@@ -30,7 +34,7 @@ class MainActivity : ComponentActivity() {
                     padding ->
                     NavHost(
                         navController = navController,
-                        startDestination = "mainScreen",
+                        startDestination = if (savedName != null) "phraseScreen/$savedName" else "mainScreen",
                         modifier = Modifier.padding(padding)
                     ) {
                         composable("mainScreen") {
@@ -42,7 +46,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("phraseScreen/{userName}") {
-                            backStackEntry -> val userName = backStackEntry.arguments?.getString("userName") ?: "Visitante"
+                                backStackEntry -> val userName = backStackEntry.arguments?.getString("userName") ?: "Visitante"
                             PhraseScreen(
                                 modifier = Modifier.fillMaxSize(),
                                 userName = userName
