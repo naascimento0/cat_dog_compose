@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,16 +24,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.catdogincompose.R
 import com.example.catdogincompose.ui.theme.CatDogInComposeTheme
 
@@ -64,14 +61,14 @@ fun PhraseScreen(modifier: Modifier, userName: String) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(color = colorResource(id = R.color.white)),
+            .background(MaterialTheme.colorScheme.background), // substituido
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = colorResource(id = R.color.blue)),
+                .background(MaterialTheme.colorScheme.primary), // substituido
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.Top
         ) {
@@ -87,7 +84,7 @@ fun PhraseScreen(modifier: Modifier, userName: String) {
                         isCatSelected = true
                         isDogSelected = false
                     },
-                colorFilter = if(isCatSelected) ColorFilter.tint(colorResource(id = R.color.yellow)) else null
+                colorFilter = if(isCatSelected) ColorFilter.tint(MaterialTheme.colorScheme.tertiary) else null // substituido
             )
             Image(
                 painter = painterResource(id = R.drawable.dog),
@@ -101,7 +98,7 @@ fun PhraseScreen(modifier: Modifier, userName: String) {
                         isCatSelected = false
                         isDogSelected = true
                     },
-                colorFilter = if(isDogSelected) ColorFilter.tint(colorResource(id = R.color.yellow)) else null
+                colorFilter = if(isDogSelected) ColorFilter.tint(MaterialTheme.colorScheme.tertiary) else null // substituido
             )
         }
 
@@ -109,21 +106,12 @@ fun PhraseScreen(modifier: Modifier, userName: String) {
 
         Text(
             text = stringResource(id = R.string.greeting, userName),
-            style = TextStyle(
-                fontFamily = alataFont,
-                fontSize = 20.sp,
-                color = colorResource(id = R.color.black)
-            )
+            style = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.colorScheme.onBackground) //substituido
         )
 
         Text(
             text = currentPhrase,
-            style = TextStyle(
-                fontFamily = alataFont,
-                fontSize = 20.sp,
-                color = colorResource(id = R.color.black),
-                textAlign = TextAlign.Center
-            ),
+            style = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.colorScheme.onBackground), //substituido
             modifier = Modifier.padding(16.dp)
         )
 
@@ -134,12 +122,12 @@ fun PhraseScreen(modifier: Modifier, userName: String) {
                 currentPhrase = currentAnimalList.random()
             },
             colors = ButtonDefaults.buttonColors(
-                containerColor = colorResource(id = R.color.blue)
+                containerColor = MaterialTheme.colorScheme.primary //substituido
             ),
         ) {
             Text(
                 stringResource(id = R.string.button_new_phrase),
-                color = colorResource(id = R.color.white)
+                color = MaterialTheme.colorScheme.background //substituido
             )
         }
     }
