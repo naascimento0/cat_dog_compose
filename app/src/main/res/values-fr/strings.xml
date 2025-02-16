@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Cat Dog in Compose</string>
+    <string name="title">Phrases sur les chats et les chiens</string>
+    <string name="hint">Entrez votre nom</string>
+    <string name="button_save">SAUVEGARDER</string>
+    <string name="button_new_phrase">GÉNÉRER UNE AUTRE PHRASE</string>
+    <string name="greeting">Salut, %s!</string>
+</resources>
