@@ -1,6 +1,5 @@
-package com.example.catdogincompose.screen
+package com.example.catdogincompose.ui.screen
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,31 +16,32 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.catdogincompose.R
 import com.example.catdogincompose.ui.theme.CatDogInComposeTheme
+import com.example.catdogincompose.ui.viewmodel.MainViewModel
 
+/**
+ * Composable for the Main screen.
+ *
+ * This composable displays a title, a text field, and a button to save the user's name.
+ */
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
-    onSaveClick: (String) -> Unit
+    onSaveClick: (String) -> Unit,
+    viewModel: MainViewModel = hiltViewModel()
 ) {
-    var name by remember { mutableStateOf(value = "") }
-
-    val context = LocalContext.current
-    val sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-    val editor = sharedPreferences.edit()
+    val name by viewModel.name.collectAsState()
 
     Column(modifier = modifier
         .background(MaterialTheme.colorScheme.primary),
@@ -58,12 +58,12 @@ fun MainScreen(
 
         TextField(
             value = name,
-            onValueChange = { name = it },
+            onValueChange = { viewModel.saveName(it) },
             label = {
                 Text(
                     text = stringResource(id = R.string.hint),
                     style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onPrimary),
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 15.dp),
                     textAlign = TextAlign.Center
                 )
             },
@@ -71,15 +71,14 @@ fun MainScreen(
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
-            )
+            ),
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
-                editor.putString("userName", name)
-                editor.apply()
+                viewModel.saveName(name)
                 onSaveClick(name)
             },
             colors = ButtonDefaults.buttonColors(
