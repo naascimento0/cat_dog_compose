@@ -1,33 +1,33 @@
 package com.example.catdogincompose.data.repository
 
+import com.example.catdogincompose.data.remote.api.PhraseApiService
 import com.example.catdogincompose.domain.model.Phrase
 import javax.inject.Inject
 
 /**
- * Repository for phrases.
+ * Repository for managing phrases fetched from external APIs.
  *
- * This repository is used to manage the phrases.
+ * This repository acts as a data access layer for retrieving animal-related phrases (currently cat and dog).
+ * It abstracts the network calls and provides a clean interface for the application to access phrase data.
+ * It handles the transformation of API responses into `Phrase` objects and manages potential errors.
+ *
+ * @property apiService The service responsible for making API calls to fetch phrases.
  */
-class PhraseRepository @Inject constructor() {
-    private val catPhrases = listOf(
-        "Os gatos têm um órgão extra que lhes permite saborear cheiros.",
-        "Um gato pode fazer mais de 100 sons diferentes.",
-        "Os gatos têm 32 músculos em cada orelha, permitindo-lhes girar suas orelhas para ouvir melhor.",
-        "Os bigodes dos gatos são altamente sensíveis e podem detectar mudanças mínimas no ambiente."
-    )
+class PhraseRepository @Inject constructor(
+    private val apiService: PhraseApiService
+) {
 
-    private val dogPhrases = listOf(
-        "Os cães têm um olfato que é até 100.000 vezes mais sensível que o dos humanos.",
-        "Os cães conseguem entender cerca de 165 palavras e sinais diferentes.",
-        "Os cães possuem glândulas sudoríparas apenas nas patas, não pelo corpo.",
-        "Raças como o Basenji não latem, mas emitem um som peculiar conhecido como \"yodel\"."
-    )
-
-    fun getRandomCatPhrase(): Phrase {
-        return Phrase(catPhrases.random())
+    suspend fun getRandomCatPhrase(): Phrase {
+        val response = apiService.getCatPhrase()
+        return Phrase(response.fact)
     }
 
-    fun getRandomDogPhrase(): Phrase {
-        return Phrase(dogPhrases.random())
+    suspend fun getRandomDogPhrase(): Phrase {
+        val response = apiService.getDogPhrase()
+        if (response.success) {
+            return Phrase(response.facts.first())
+        } else {
+            throw Exception("Failed to get dog phrase")
+        }
     }
 }

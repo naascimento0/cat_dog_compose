@@ -1,10 +1,12 @@
 package com.example.catdogincompose.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.catdogincompose.data.repository.PhraseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -26,28 +28,54 @@ class PhraseViewModel @Inject constructor(
     private val _isDogSelected = MutableStateFlow(false)
     val isDogSelected: StateFlow<Boolean> = _isDogSelected
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
 
     init {
-        loadRandomCatPhrase()
+        viewModelScope.launch {
+            loadRandomCatPhrase()
+        }
     }
 
     fun loadRandomCatPhrase() {
-        _isCatSelected.value = true
-        _isDogSelected.value = false
-        _currentPhrase.value = phraseRepository.getRandomCatPhrase().text
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                _isCatSelected.value = true
+                _isDogSelected.value = false
+                _currentPhrase.value = phraseRepository.getRandomCatPhrase().text
+            } catch (e: Exception) {
+                _currentPhrase.value = "Error loading phrase: ${e.message}"
+            } finally {
+                _isLoading.value = false
+            }
+        }
     }
 
     fun loadRandomDogPhrase() {
-        _isCatSelected.value = false
-        _isDogSelected.value = true
-        _currentPhrase.value = phraseRepository.getRandomDogPhrase().text
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                _isCatSelected.value = false
+                _isDogSelected.value = true
+                _currentPhrase.value = phraseRepository.getRandomDogPhrase().text
+            } catch (e: Exception) {
+                _currentPhrase.value = "Error loading phrase: ${e.message}"
+            } finally {
+                _isLoading.value = false
+            }
+        }
     }
 
     fun loadNewPhrase() {
-        if (_isCatSelected.value) {
-            loadRandomCatPhrase()
-        } else {
-            loadRandomDogPhrase()
+        if (_isLoading.value) return // Don't load a new phrase if we're already loading one
+        viewModelScope.launch {
+            if (_isCatSelected.value) {
+                loadRandomCatPhrase()
+            } else {
+                loadRandomDogPhrase()
+            }
         }
     }
 }

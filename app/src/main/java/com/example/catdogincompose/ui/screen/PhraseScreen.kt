@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,6 +47,7 @@ fun PhraseScreen(
     val currentPhrase by viewModel.currentPhrase.collectAsState()
     val isCatSelected by viewModel.isCatSelected.collectAsState()
     val isDogSelected by viewModel.isDogSelected.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
     Column(
         modifier = modifier
@@ -88,11 +90,18 @@ fun PhraseScreen(
             style = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.colorScheme.onBackground)
         )
 
-        Text(
-            text = currentPhrase,
-            style = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.colorScheme.onBackground),
-            modifier = Modifier.padding(16.dp)
-        )
+        if(isLoading) {
+            CircularProgressIndicator(
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(16.dp)
+            )
+        } else {
+            Text(
+                text = currentPhrase,
+                style = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.colorScheme.onBackground),
+                modifier = Modifier.padding(16.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
