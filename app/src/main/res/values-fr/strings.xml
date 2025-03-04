@@ -5,4 +5,5 @@
     <string name="button_save">SAUVEGARDER</string>
     <string name="button_new_phrase">GÉNÉRER UNE AUTRE PHRASE</string>
     <string name="greeting">Salut, %s!</string>
+    <string name="loading">Chargement...</string>
 </resources>

@@ -5,4 +5,5 @@
     <string name="button_save">GUARDAR</string>
     <string name="button_new_phrase">GERAR OUTRA FRASE</string>
     <string name="greeting">Olá, %s!</string>
+    <string name="loading">Carregando...</string>
 </resources>
