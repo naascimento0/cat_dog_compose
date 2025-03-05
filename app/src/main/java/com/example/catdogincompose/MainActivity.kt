@@ -9,7 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -20,6 +23,7 @@ import com.example.catdogincompose.ui.navigation.navigateToPhraseScreen
 import com.example.catdogincompose.ui.screen.MainScreen
 import com.example.catdogincompose.ui.screen.PhraseScreen
 import com.example.catdogincompose.ui.theme.CatDogInComposeTheme
+import com.example.catdogincompose.ui.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -34,14 +38,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge() // permite que o app use a tela inteira
 
-        // inicializa o respositorio do shared preferences
-        val userPreferencesRepository = UserPreferencesRepository(applicationContext)
-        val savedUserName = userPreferencesRepository.getUserName()
-
         // define o conteudo da tela
         setContent {
             CatDogInComposeTheme {
                 val navController = rememberNavController() // controla a navegaçao entre telas
+                val viewModel: MainViewModel = hiltViewModel() // instancia o viewModel
+                val savedUserName by viewModel.name.collectAsState() // observa o estado do nome do usuario
+
                 // launched effect permite executar coroutines dentro de um composable, serve para executar efeitos colaterais
                 LaunchedEffect(savedUserName) { // se o nome do usuario for salvo, navega para a tela de frases
                     if (savedUserName.isNotEmpty()) {

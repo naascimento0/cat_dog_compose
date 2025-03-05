@@ -16,8 +16,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,7 +45,8 @@ fun MainScreen(
     onSaveClick: (String) -> Unit,
     viewModel: MainViewModel = hiltViewModel()
 ) {
-    val name by viewModel.name.collectAsState()
+
+    var inputName by remember { mutableStateOf("") }
 
     Column(modifier = modifier
         .background(MaterialTheme.colorScheme.primary),
@@ -57,8 +62,8 @@ fun MainScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         TextField(
-            value = name,
-            onValueChange = { viewModel.saveName(it) },
+            value = inputName,
+            onValueChange = { inputName = it },
             label = {
                 Text(
                     text = stringResource(id = R.string.hint),
@@ -78,12 +83,13 @@ fun MainScreen(
 
         Button(
             onClick = {
-                viewModel.saveName(name)
-                onSaveClick(name)
+                viewModel.saveName(inputName)
+                onSaveClick(inputName)
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.secondary
             ),
+            enabled = inputName.isNotEmpty()
         ) {
             Text(stringResource(id = R.string.button_save), color = MaterialTheme.colorScheme.onSecondary)
         }

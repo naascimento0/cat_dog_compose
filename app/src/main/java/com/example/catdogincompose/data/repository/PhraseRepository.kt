@@ -48,7 +48,7 @@ class PhraseRepository @Inject constructor(
             Phrase(apiPhrase)
         } catch (e: Exception) {
             phraseDao.getRandomPhraseByType("cat")?.let { Phrase(it.text) }
-                ?: throw IllegalStateException("No cat phrases available")
+                ?: throw IllegalStateException("No cat phrases available, API failed")
         }
     }
 
@@ -59,7 +59,7 @@ class PhraseRepository @Inject constructor(
             Phrase(apiPhrase)
         } catch (e: Exception) {
             phraseDao.getRandomPhraseByType("dog")?.let { Phrase(it.text) }
-                ?: throw IllegalStateException("No dog phrases available")
+                ?: throw IllegalStateException("No dog phrases available, API failed")
         }
     }
 }
